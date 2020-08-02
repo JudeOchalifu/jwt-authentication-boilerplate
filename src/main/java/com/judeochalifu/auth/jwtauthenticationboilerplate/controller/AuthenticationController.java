@@ -7,6 +7,7 @@ import com.judeochalifu.auth.jwtauthenticationboilerplate.response.ApiResponse;
 import com.judeochalifu.auth.jwtauthenticationboilerplate.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -14,13 +15,15 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("account")
 public class AuthenticationController {
 
     @Inject
     AccountService accountService;
     @Inject
     AccountRepository accountRepository;
+    @Inject
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/user/{username}")
     ResponseEntity<String> getAccountByUsername(@PathVariable String username) {
@@ -53,7 +56,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/account/new")
+    @PostMapping("/sign-up")
     ResponseEntity<String> signUp(@RequestBody Account account) {
 
         if (accountService.getAccountByEmail(account.getEmail()) != null) {
@@ -66,6 +69,7 @@ public class AuthenticationController {
         }
 
         account.setDateCreated(Timestamp.from(Instant.now()));
+        account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 
         Account newAccount = accountService.saveUserAccount(account);
         ApiResponse<Account> apiResponse = new ApiResponse<>("Account created successfully", HttpStatus.OK.value(), newAccount);

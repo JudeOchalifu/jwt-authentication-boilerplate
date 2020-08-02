@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("account")
 public class AuthenticationController {
 
     @Inject
@@ -56,7 +56,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/account/sign-up")
+    @PostMapping("/sign-up")
     ResponseEntity<String> signUp(@RequestBody Account account) {
 
         if (accountService.getAccountByEmail(account.getEmail()) != null) {

@@ -1,4 +1,4 @@
-package com.judeochalifu.auth.jwtauthenticationboilerplate;
+package com.judeochalifu.auth.jwtauthenticationboilerplate.filter;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;

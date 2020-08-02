@@ -18,8 +18,11 @@ public class Account {
     private Long id;
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
     private Timestamp dateCreated;
     private AccountType accountType;
+    private String email;
 
 
     public Long getId() {
@@ -62,6 +65,22 @@ public class Account {
         this.accountType = accountType;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,5 +95,11 @@ public class Account {
     }
 
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

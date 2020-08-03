@@ -25,8 +25,9 @@ public class AuthenticationController {
     @Inject
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     @GetMapping("/user/{username}")
-    ResponseEntity<String> getAccountByUsername(@PathVariable String username) {
+    public ResponseEntity<String> getAccountByUsername(@PathVariable String username) {
         Account account = accountService.getAccountByUsername(username);
         if (account == null) {
             ApiResponse<Account> apiResponse = new ApiResponse<Account>("No account associated with that username", HttpStatus.NOT_FOUND.value(),
@@ -42,7 +43,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/user/{email}")
-    ResponseEntity<String> getAccountByEmail(@PathVariable String email) {
+    public ResponseEntity<String> getAccountByEmail(@PathVariable String email) {
         Account account = accountService.getAccountByUsername(email);
         if (account == null) {
             ApiResponse<Account> apiResponse = new ApiResponse<Account>("Success", HttpStatus.OK.value(),
@@ -57,7 +58,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/sign-up")
-    ResponseEntity<String> signUp(@RequestBody Account account) {
+    public ResponseEntity<String> signUp(@RequestBody Account account) {
 
         if (accountService.getAccountByEmail(account.getEmail()) != null) {
             ApiResponse<String> apiResponse = new ApiResponse<>("A user with that email already exist", HttpStatus.CONFLICT.value(), null);

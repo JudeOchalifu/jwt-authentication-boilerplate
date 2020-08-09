@@ -16,14 +16,15 @@ import java.time.Instant;
 
 @RestController
 @RequestMapping("account")
-public class AuthenticationController {
+public class AccountController {
 
     @Inject
     AccountService accountService;
-    @Inject
-    AccountRepository accountRepository;
-    @Inject
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    
+    public AccountController(BCryptPasswordEncoder bCryptPasswordEncoder) {
+       this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
 
     @GetMapping("/user/{username}")
@@ -35,7 +36,7 @@ public class AuthenticationController {
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.NOT_FOUND);
         } else {
             ApiResponse<Account> apiResponse = new ApiResponse<Account>("Success", HttpStatus.OK.value(),
-                    accountRepository.getAccountByUsername(username).get());
+                    accountService.getAccountByUsername(username));
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
         }
 
@@ -46,8 +47,8 @@ public class AuthenticationController {
     public ResponseEntity<String> getAccountByEmail(@PathVariable String email) {
         Account account = accountService.getAccountByUsername(email);
         if (account == null) {
-            ApiResponse<Account> apiResponse = new ApiResponse<Account>("Success", HttpStatus.OK.value(),
-                    accountRepository.getAccountByEmail(email).get());
+            ApiResponse<Account> apiResponse = new ApiResponse<>("Success", HttpStatus.OK.value(),
+                    accountService.getAccountByEmail(email));
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
         } else  {
             ApiResponse<Account> apiResponse = new ApiResponse<Account>("No account associated with that email", HttpStatus.NOT_FOUND.value(),
@@ -64,7 +65,7 @@ public class AuthenticationController {
             ApiResponse<String> apiResponse = new ApiResponse<>("A user with that email already exist", HttpStatus.CONFLICT.value(), null);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.CONFLICT);
         }
-        if (accountService.getAccountByEmail(account.getEmail()) != null) {
+        if (accountService.getAccountByUsername(account.getUsername()) != null) {
             ApiResponse<String> apiResponse = new ApiResponse<>("A user with that username already exist", HttpStatus.CONFLICT.value(), null);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.CONFLICT);
         }

@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 @Service
-public class AccountService {
+public class AccountService  {
 
-    @Inject
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
+
+    public AccountService(AccountRepository accountRepository ){
+        this.accountRepository = accountRepository;
+    }
 
     public Account saveUserAccount(Account account) {
         return accountRepository.save(account);
@@ -32,6 +35,10 @@ public class AccountService {
             return accountRepository.getAccountByUsername(username).get();
         }
         return null;
+    }
+    
+    public Account findById(Long id) {
+        return accountRepository.findById(id).orElse(null);
     }
 
 

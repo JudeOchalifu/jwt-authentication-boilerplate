@@ -65,7 +65,7 @@ public class AccountController {
             ApiResponse<String> apiResponse = new ApiResponse<>("A user with that email already exist", HttpStatus.CONFLICT.value(), null);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.CONFLICT);
         }
-        if (accountService.getAccountByEmail(account.getEmail()) != null) {
+        if (accountService.getAccountByUsername(account.getUsername()) != null) {
             ApiResponse<String> apiResponse = new ApiResponse<>("A user with that username already exist", HttpStatus.CONFLICT.value(), null);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.CONFLICT);
         }

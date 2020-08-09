@@ -1,0 +1,26 @@
+[
+  {
+    "firstName": "Angela",
+    "lastName": "Brown",
+    "id": 2,
+    "username": "angiebrown",
+    "email": "angie@yahoo.com",
+    "dateCreated": ""
+  },
+  {
+    "firstName": "Emmanuel",
+    "lastName": "Graham",
+    "id": 3,
+    "username": "emmy",
+    "email": "emmy@gmail.com",
+    "dateCreated": ""
+  },
+  {
+    "firstName": "Jessica",
+    "lastName": "Jones",
+    "id": 1,
+    "username": "jessiej",
+    "email": "jessie@yahoo.com",
+    "dateCreated": ""
+  }
+]

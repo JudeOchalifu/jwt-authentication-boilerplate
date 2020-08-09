@@ -27,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@WebMvcTest(controllers = AccountController.class)
+
 public class AccountControllerTest {
    
    @Mock
@@ -36,8 +36,8 @@ public class AccountControllerTest {
    @InjectMocks
    private final AccountController accountController = new AccountController(bCryptPasswordEncoder);
    
-   @Autowired
-   private MockMvc mockMvc;
+   /*@Autowired
+   private MockMvc mockMvc;*/
    
    
    @Mock

@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class AccountServiceTest {
@@ -86,6 +87,7 @@ public class AccountServiceTest {
       
       given(accountService.getAccountByEmail(account.getEmail())).willReturn(account);
       given(accountService.getAccountByUsername(account.getUsername())).willReturn(account);
+      when(accountService.saveUserAccount(account)).thenReturn(account);
       Account newAccount = accountService.saveUserAccount(account);
       System.out.println(newAccount == null ? "IS NULLLLLLLLL" : "IS NOT NULLLLLLLLLLLLLL");
       assertThat(newAccount).isNotNull();

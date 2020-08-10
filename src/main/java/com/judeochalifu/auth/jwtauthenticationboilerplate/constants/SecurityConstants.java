@@ -6,4 +6,5 @@ public class SecurityConstants {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String AUTHORIZATION = "Authorization";
     public static final String SIGN_UP_URL = "/account/sign-up";
+    
 }

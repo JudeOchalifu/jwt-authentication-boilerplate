@@ -27,7 +27,7 @@ public class AccountController {
     }
 
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/user/username/{username}")
     public ResponseEntity<String> getAccountByUsername(@PathVariable String username) {
         Account account = accountService.getAccountByUsername(username);
         if (account == null) {
@@ -35,25 +35,27 @@ public class AccountController {
                     null);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.NOT_FOUND);
         } else {
+	   account.setPassword("");
             ApiResponse<Account> apiResponse = new ApiResponse<Account>("Success", HttpStatus.OK.value(),
-                    accountService.getAccountByUsername(username));
+                    account);
             return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
         }
 
 
     }
 
-    @GetMapping("/user/{email}")
+    @GetMapping("/user/email/{email}")
     public ResponseEntity<String> getAccountByEmail(@PathVariable String email) {
-        Account account = accountService.getAccountByUsername(email);
+        Account account = accountService.getAccountByEmail(email);
         if (account == null) {
-            ApiResponse<Account> apiResponse = new ApiResponse<>("Success", HttpStatus.OK.value(),
-                    accountService.getAccountByEmail(email));
-            return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
+	   ApiResponse<Account> apiResponse = new ApiResponse<Account>("No account associated with that email", HttpStatus.NOT_FOUND.value(),
+		   null);
+	   return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.NOT_FOUND);
         } else  {
-            ApiResponse<Account> apiResponse = new ApiResponse<Account>("No account associated with that email", HttpStatus.NOT_FOUND.value(),
-                    null);
-            return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.NOT_FOUND);
+           account.setPassword("");
+	   ApiResponse<Account> apiResponse = new ApiResponse<>("Success", HttpStatus.OK.value(),
+		   account);
+	   return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
         }
 
     }

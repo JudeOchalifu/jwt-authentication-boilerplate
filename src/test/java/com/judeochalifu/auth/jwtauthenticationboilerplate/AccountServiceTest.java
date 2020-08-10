@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class AccountServiceTest {
@@ -53,8 +55,6 @@ public class AccountServiceTest {
       MockitoAnnotations.initMocks(this);
       accountList = new ArrayList<>();
       accountList = AccountsJsonReader.readAccountsForTest();
-      
-      
    }
    
    @Test
@@ -71,25 +71,28 @@ public class AccountServiceTest {
       account.setPassword("qwerty1845");
       
       
-      assertNotNull(account.getEmail());
-      assertFalse(account.getFirstName().isEmpty(), "First name cannot be empty");
-      assertFalse(account.getLastName().isEmpty(), "Last name cannot be empty");
-      assertNotNull(account.getPassword(), "Password cannot be null");
-      assertNotNull(account.getFirstName());
-      assertNotNull(account.getLastName());
-      assertNotNull(account.getUsername());
-      assertNotNull(account.getDateCreated());
-      assertFalse(DateTimeHelper.checkIfDateInPastOrFuture(account.getDateCreated()), "Registration date cannot be in the past of the future");
-      assertTrue(EmailValidator.validateEmail(account.getEmail()), "The email address is not valid");
-      assertTrue(account.getPassword().length() >= 8, "Password length must be >=  8");
       
-      
-      given(accountService.getAccountByEmail(account.getEmail())).willReturn(account);
-      given(accountService.getAccountByUsername(account.getUsername())).willReturn(account);
+      when(accountService.saveUserAccount(account)).thenReturn(account);
       Account newAccount = accountService.saveUserAccount(account);
-      System.out.println(newAccount == null ? "IS NULLLLLLLLL" : "IS NOT NULLLLLLLLLLLLLL");
       assertThat(newAccount).isNotNull();
       verify(accountService).saveUserAccount(any(Account.class));
+      
+   }
+   
+   @Test
+   public void shouldFailIfPasswordInvalidOrEmpty() {
+      final Account account = new Account();
+   
+      //account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,6,17,11)));
+      account.setDateCreated(Timestamp.from(Instant.now()));
+      account.setAccountType(AccountType.USER);
+      account.setEmail("tester@yahoo.com");
+      account.setFirstName("James");
+      account.setLastName("Anderson");
+      account.setUsername("janderson");
+      account.setPassword("qwerty1845");
+   
+      assertTrue(account.getPassword().length() >= 8, "Password length must be >=  8");
       
    }
    
@@ -125,8 +128,61 @@ public class AccountServiceTest {
       
       given(accountService.getAccountByUsername(account.getEmail())).willReturn(account);
       
-      /*assertThrows(AccountAlreadyExistException.class, () -> {
-	 accountService.saveUserAccount(account);
-      });*/
+   }
+   
+   @Test
+   public void shouldFailIfRegistrationDateInPastOrFuture() {
+      final Account account = new Account();
+      
+      account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
+      //account.setDateCreated(Timestamp.from(Instant.now()));
+      account.setAccountType(AccountType.USER);
+      account.setEmail("tester@yahoo.com");
+      account.setFirstName("James");
+      account.setLastName("Anderson");
+      account.setUsername("janderson");
+      account.setPassword("qwerty1845");
+      assertFalse(DateTimeHelper.checkIfDateInPastOrFuture(account.getDateCreated()), "Registration date cannot be in the past of the future");
+      
+   }
+   @Test
+   public void shouldFailIfEmailInvalidOrNull() {
+      final Account account = new Account();
+   
+      account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
+      //account.setDateCreated(Timestamp.from(Instant.now()));
+      account.setAccountType(AccountType.USER);
+      account.setEmail("tester@yahoo.com");
+      account.setFirstName("James");
+      account.setLastName("Anderson");
+      account.setUsername("janderson");
+      account.setPassword("qwerty1845");
+      
+      assertNotNull(account.getEmail());
+      assertTrue(EmailValidator.validateEmail(account.getEmail()), "The email address is not valid");
+      
+   }
+   
+   @Test
+   public void shouldFailIfFieldsAreInvalid() {
+      final Account account = new Account();
+   
+      account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
+      //account.setDateCreated(Timestamp.from(Instant.now()));
+      account.setAccountType(AccountType.USER);
+      account.setEmail("tester@yahoo.com");
+      account.setFirstName("James");
+      account.setLastName("Anderson");
+      account.setUsername("janderson");
+      account.setPassword("qwerty1845");
+      
+      assertFalse(account.getFirstName().isEmpty(), "First name cannot be empty");
+      assertFalse(account.getLastName().isEmpty(), "Last name cannot be empty");
+      assertNotNull(account.getPassword(), "Password cannot be null");
+      assertNotNull(account.getFirstName());
+      assertNotNull(account.getLastName());
+      assertNotNull(account.getUsername());
+      assertNotNull(account.getDateCreated());
+      assertNotNull(account.getAccountType());
    }
 }

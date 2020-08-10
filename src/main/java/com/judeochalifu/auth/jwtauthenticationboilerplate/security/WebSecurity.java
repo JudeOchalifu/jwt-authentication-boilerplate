@@ -14,8 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import static com.judeochalifu.auth.jwtauthenticationboilerplate.constants.SecurityConstants.SIGN_UP_URL;
+
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {

@@ -11,12 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+
 
 
 import java.sql.Timestamp;
@@ -32,31 +30,19 @@ public class AccountControllerTest {
    
    @Mock
    BCryptPasswordEncoder bCryptPasswordEncoder;
-   
-   @InjectMocks
-   private final AccountController accountController = new AccountController(bCryptPasswordEncoder);
-   
-   /*@Autowired
-   private MockMvc mockMvc;*/
-   
-   
    @Mock
    private AccountRepository accountRepository;
-   
    @Mock
    private final AccountService accountService = new AccountService(accountRepository);
+   
+   @InjectMocks
+   private final AccountController accountController = new AccountController(bCryptPasswordEncoder, accountService);
+   
    
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
       System.out.println("INIT=======>");
-   }
-   
-   @Test
-   
-   public void testAuthenticationController() {
-   
-   
    }
    
    
@@ -95,7 +81,7 @@ public class AccountControllerTest {
       
       given(accountService.findById(id)).willReturn(account);
       
-      //this.mockMvc.perform()
+      
       
    }
 }

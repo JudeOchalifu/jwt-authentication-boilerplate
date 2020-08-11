@@ -78,7 +78,7 @@ public class AccountServiceTest {
       account.setPassword("qwerty1845");
    
       ResponseEntity<String> signUpResponse = accountController.signUp(account);
-      assertThat(signUpResponse.getStatusCodeValue() == 200);
+      assertThat(signUpResponse.getStatusCodeValue()).isEqualTo(200);
    }
    
    @Test

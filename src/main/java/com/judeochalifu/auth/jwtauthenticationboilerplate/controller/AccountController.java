@@ -18,12 +18,13 @@ import java.time.Instant;
 @RequestMapping("account")
 public class AccountController {
 
-    @Inject
+   
     AccountService accountService;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     
-    public AccountController(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AccountController(BCryptPasswordEncoder bCryptPasswordEncoder, AccountService accountService) {
        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+       this.accountService = accountService;
     }
 
 
@@ -76,7 +77,7 @@ public class AccountController {
         account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 
         Account newAccount = accountService.saveUserAccount(account);
-        ApiResponse<Account> apiResponse = new ApiResponse<>("Account created successfully", HttpStatus.OK.value(), newAccount);
+        ApiResponse<Account> apiResponse = new ApiResponse<>("success", HttpStatus.OK.value(), newAccount);
         return new ResponseEntity<String>(new Gson().toJson(apiResponse), HttpStatus.OK);
 
     }

@@ -1,6 +1,7 @@
 package com.judeochalifu.auth.jwtauthenticationboilerplate;
 
 import com.judeochalifu.auth.jwtauthenticationboilerplate.constants.AccountType;
+import com.judeochalifu.auth.jwtauthenticationboilerplate.controller.AccountController;
 import com.judeochalifu.auth.jwtauthenticationboilerplate.domain.Account;
 import com.judeochalifu.auth.jwtauthenticationboilerplate.exception.AccountAlreadyExistException;
 import com.judeochalifu.auth.jwtauthenticationboilerplate.filter.JWTAuthenticationFilter;
@@ -16,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.ResourceUtils;
 
 import java.io.FileNotFoundException;
@@ -26,14 +29,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class AccountServiceTest {
@@ -47,6 +50,10 @@ public class AccountServiceTest {
    @Mock
    private AccountService accountService;
    
+   @InjectMocks
+   private AccountController accountController;
+   @Mock
+   BCryptPasswordEncoder bCryptPasswordEncoder;
    @InjectMocks
    private final JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager);
    
@@ -69,13 +76,31 @@ public class AccountServiceTest {
       account.setLastName("Anderson");
       account.setUsername("janderson");
       account.setPassword("qwerty1845");
+   
+      ResponseEntity<String> signUpResponse = accountController.signUp(account);
+      assertThat(signUpResponse.getStatusCodeValue() == 200);
+   }
+   
+   @Test
+   public void shouldSaveAccountSuccessfullyAtServiceLayer() {
+      final Account account = new Account();
       
-      
-      
+      //account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,6,17,11)));
+      account.setDateCreated(Timestamp.from(Instant.now()));
+      account.setAccountType(AccountType.USER);
+      account.setEmail("tester@yahoo.com");
+      account.setFirstName("James");
+      account.setLastName("Anderson");
+      account.setUsername("janderson");
+      account.setPassword("qwerty1845");
+   
+      ResponseEntity<String> signUpResponse = accountController.signUp(account);
+      assertThat(signUpResponse.getStatusCodeValue() == 200);
+      //assertThat(Objects.requireNonNull(signUpResponse.getHeaders().getLocation()).getPath()).isEqualTo("/account/user/signup");
       when(accountService.saveUserAccount(account)).thenReturn(account);
       Account newAccount = accountService.saveUserAccount(account);
       assertThat(newAccount).isNotNull();
-      verify(accountService).saveUserAccount(any(Account.class));
+      verify(accountService, times(2)).saveUserAccount(any(Account.class));
       
    }
    
@@ -134,8 +159,8 @@ public class AccountServiceTest {
    public void shouldFailIfRegistrationDateInPastOrFuture() {
       final Account account = new Account();
       
-      account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
-      //account.setDateCreated(Timestamp.from(Instant.now()));
+      //account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,11,17,11)));
+      account.setDateCreated(Timestamp.from(Instant.now()));
       account.setAccountType(AccountType.USER);
       account.setEmail("tester@yahoo.com");
       account.setFirstName("James");
@@ -149,8 +174,8 @@ public class AccountServiceTest {
    public void shouldFailIfEmailInvalidOrNull() {
       final Account account = new Account();
    
-      account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
-      //account.setDateCreated(Timestamp.from(Instant.now()));
+      //account.setDateCreated(Timestamp.valueOf(LocalDateTime.of(2020,8,10,17,11)));
+      account.setDateCreated(Timestamp.from(Instant.now()));
       account.setAccountType(AccountType.USER);
       account.setEmail("tester@yahoo.com");
       account.setFirstName("James");
